@@ -25,7 +25,6 @@ import BusinessModelCanvas from "./Pages/VisionBoard";
 import ChildSetup from "./Pages/ChildSetup";
 import ReviewShie5s from "./Pages/ReviewShie5s";
 import CompAnalysis from "./Pages/CompAnalysis";
-import Bmc from "./Pages/BMC.JSX";
 
 function App() {
   return (
@@ -35,7 +34,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/shiekhs" element={<Shiekhs />} />
-        <Route path="/bmc2" element={<Bmc />} />
         <Route path="/analysis" element={<CompAnalysis />} />
         <Route path="/shiekhs/childsetup" element={<ChildSetup />} />
         <Route path="/shiekhs/review" element={<ReviewShie5s />} />
