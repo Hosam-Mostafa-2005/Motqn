@@ -50,6 +50,15 @@ const MarketplaceDetails = () => {
                   لتسمع نبرة صوته وترى أسلوبه في التفاعل قبل الحجز.
                 </p>
               </div>
+
+              <div className="pt-4">
+                <Link
+                  to="/teachers"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-lg transition-all"
+                >
+                  استكشف سوق المحفظين المعتمدين الآن ←
+                </Link>
+              </div>
             </div>
           </div>
           {/* رسم توضيحي أو Placeholder لصورة فخمة */}

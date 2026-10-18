@@ -10,6 +10,33 @@ import {
 } from "react-icons/fa";
 import { GiLantern, GiAbstract050, GiPrayerBeads } from "react-icons/gi";
 
+// مكون النجوم الخارجي (Reusable Component)
+const StarRating = ({ label, value, onChange }) => {
+  return (
+    <div className="mb-4">
+      <label className="block text-blue-900 font-bold mb-2 text-sm">
+        {label}
+      </label>
+      <div className="flex gap-2">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            onClick={() => onChange(star)}
+            className="text-2xl transition-transform hover:scale-110 focus:outline-none"
+          >
+            {star <= value ? (
+              <FaStar className="text-yellow-400 drop-shadow-md" />
+            ) : (
+              <FaRegStar className="text-gray-300" />
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const ReviewShie5s = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -25,7 +52,7 @@ const ReviewShie5s = () => {
 
   // دالة لتحديث التقييم
   const handleRate = (category, value) => {
-    setRatings({ ...ratings, [category]: value });
+    setRatings((prev) => ({ ...prev, [category]: value }));
   };
 
   const handleSubmit = (e) => {
@@ -40,33 +67,6 @@ const ReviewShie5s = () => {
     animate: { rotate: [2, -2, 2], y: [0, 5, 0] },
     transition: { duration, repeat: Infinity, ease: "easeInOut", delay },
   });
-
-  // مكون النجوم الداخلي (Reusable Component)
-  const StarRating = ({ label, category, value }) => {
-    return (
-      <div className="mb-4">
-        <label className="block text-blue-900 font-bold mb-2 text-sm">
-          {label}
-        </label>
-        <div className="flex gap-2">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              type="button"
-              onClick={() => handleRate(category, star)}
-              className="text-2xl transition-transform hover:scale-110 focus:outline-none"
-            >
-              {star <= value ? (
-                <FaStar className="text-yellow-400 drop-shadow-md" />
-              ) : (
-                <FaRegStar className="text-gray-300" />
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div
@@ -166,18 +166,18 @@ const ReviewShie5s = () => {
                 <div className="grid grid-cols-1 gap-2">
                   <StarRating
                     label="💎 جودة النطق وتصحيح التلاوة"
-                    category="pronunciation"
                     value={ratings.pronunciation}
+                    onChange={(val) => handleRate("pronunciation", val)}
                   />
                   <StarRating
                     label="🧠 أسلوب التحفيظ والمراجعة"
-                    category="memorization"
                     value={ratings.memorization}
+                    onChange={(val) => handleRate("memorization", val)}
                   />
                   <StarRating
                     label="🤝 تفاعل الشيخ وتشجيعه للطفل"
-                    category="interaction"
                     value={ratings.interaction}
+                    onChange={(val) => handleRate("interaction", val)}
                   />
                 </div>
 

@@ -11,65 +11,65 @@ import {
   FaWallet,
 } from "react-icons/fa";
 
-const Bmc = () => {
-  // مكون فرعي للقسم (Section Component)
-  const CanvasSection = ({ title, icon, color, children, className = "" }) => {
-    const colorClasses = {
-      red: "border-t-4 border-red-500 bg-red-50",
-      blue: "border-t-4 border-blue-500 bg-blue-50",
-      yellow: "border-t-4 border-yellow-500 bg-yellow-50",
-      purple: "border-t-4 border-purple-500 bg-purple-50",
-      green: "border-t-4 border-green-500 bg-green-50",
-      orange: "border-t-4 border-orange-500 bg-orange-50",
-    };
-
-    const textColors = {
-      red: "text-red-700",
-      blue: "text-blue-700",
-      yellow: "text-yellow-700",
-      purple: "text-purple-700",
-      green: "text-green-700",
-      orange: "text-orange-700",
-    };
-
-    return (
-      <div
-        className={`p-5 border border-gray-200 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col ${colorClasses[color]} ${className}`}
-      >
-        {/* Title Header (English - LTR) */}
-        <div
-          className={`flex items-center justify-between mb-4 border-b border-gray-200 pb-2 ${textColors[color]}`}
-          dir="ltr"
-        >
-          <h3 className="font-black text-lg uppercase tracking-wide font-sans">
-            {title}
-          </h3>
-          <span className="text-2xl opacity-80">{icon}</span>
-        </div>
-
-        {/* Content (Arabic - RTL) */}
-        <div
-          className="text-gray-700 text-sm leading-relaxed font-medium flex-1 text-right"
-          dir="rtl"
-        >
-          {children}
-        </div>
-      </div>
-    );
+// مكون فرعي للقسم (Section Component)
+const CanvasSection = ({ title, icon, color, children, className = "" }) => {
+  const colorClasses = {
+    red: "border-t-4 border-red-500 bg-red-50",
+    blue: "border-t-4 border-blue-500 bg-blue-50",
+    yellow: "border-t-4 border-yellow-500 bg-yellow-50",
+    purple: "border-t-4 border-purple-500 bg-purple-50",
+    green: "border-t-4 border-green-500 bg-green-50",
+    orange: "border-t-4 border-orange-500 bg-orange-50",
   };
 
-  // قائمة نقطية مخصصة
-  const List = ({ items }) => (
-    <ul className="space-y-2">
-      {items.map((item, idx) => (
-        <li key={idx} className="flex items-start gap-2">
-          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gray-400 flex-shrink-0" />
-          <span>{item}</span>
-        </li>
-      ))}
-    </ul>
-  );
+  const textColors = {
+    red: "text-red-700",
+    blue: "text-blue-700",
+    yellow: "text-yellow-700",
+    purple: "text-purple-700",
+    green: "text-green-700",
+    orange: "text-orange-700",
+  };
 
+  return (
+    <div
+      className={`p-5 border border-gray-200 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col ${colorClasses[color]} ${className}`}
+    >
+      {/* Title Header (English - LTR) */}
+      <div
+        className={`flex items-center justify-between mb-4 border-b border-gray-200 pb-2 ${textColors[color]}`}
+        dir="ltr"
+      >
+        <h3 className="font-black text-lg uppercase tracking-wide font-sans">
+          {title}
+        </h3>
+        <span className="text-2xl opacity-80">{icon}</span>
+      </div>
+
+      {/* Content (Arabic - RTL) */}
+      <div
+        className="text-gray-700 text-sm leading-relaxed font-medium flex-1 text-right"
+        dir="rtl"
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
+
+// قائمة نقطية مخصصة
+const List = ({ items }) => (
+  <ul className="space-y-2">
+    {items.map((item, idx) => (
+      <li key={idx} className="flex items-start gap-2">
+        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gray-400 flex-shrink-0" />
+        <span>{item}</span>
+      </li>
+    ))}
+  </ul>
+);
+
+const Bmc = () => {
   return (
     <div className="min-h-screen bg-[#0a1128] font-tajawal py-12 px-4 md:px-8">
       {/* العنوان الخارجي */}

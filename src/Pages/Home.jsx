@@ -39,7 +39,7 @@ const Home = () => {
       dir="rtl"
     >
       {/* 1. Ramadan Decorations (Global) */}
-      <div className="fixed top-0 left-0 w-full flex justify-around pointer-events-none z-50">
+      {/* <div className="fixed top-0 left-0 w-full flex justify-around pointer-events-none z-50">
         {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
@@ -56,7 +56,7 @@ const Home = () => {
             <GiLantern className="text-yellow-500 text-4xl -mt-1 drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]" />
           </motion.div>
         ))}
-      </div>
+      </div> */}
 
       {/* 2. Hero Section (Updated CTA) */}
       <section className="relative min-h-screen flex items-center justify-center bg-[#0a1128] text-white p-6 overflow-hidden">
@@ -106,18 +106,24 @@ const Home = () => {
 
           <motion.div
             variants={fadeIn}
-            className="flex flex-wrap justify-center gap-6"
+            className="flex flex-wrap justify-center gap-4"
           >
             <Link
               to="/register"
-              className="px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white text-xl font-bold rounded-2xl shadow-lg hover:shadow-blue-500/50 transition-all flex items-center gap-3 group"
+              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white text-lg font-bold rounded-2xl shadow-lg hover:shadow-blue-500/50 transition-all flex items-center gap-3 group"
             >
               ابدأ رحلتك مجاناً{" "}
               <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
             </Link>
             <Link
+              to="/teachers"
+              className="px-8 py-4 bg-yellow-500 hover:bg-yellow-400 text-[#0a1128] text-lg font-black rounded-2xl shadow-lg shadow-yellow-500/20 transition-all hover:scale-105"
+            >
+              استكشف المحفظين
+            </Link>
+            <Link
               to="/features"
-              className="px-10 py-5 border border-white/30 hover:bg-white/10 text-white text-xl font-bold rounded-2xl transition-all backdrop-blur-sm"
+              className="px-8 py-4 border border-white/30 hover:bg-white/10 text-white text-lg font-bold rounded-2xl transition-all backdrop-blur-sm"
             >
               جولة في المميزات
             </Link>
@@ -133,7 +139,7 @@ const Home = () => {
               لماذا يختار الآباء "مُتقن"؟
             </h2>
             <p className="text-gray-500 text-xl">
-              حلول تقنية وتربوية شاملة (MVP Features)
+              حلول تقنية وتربوية شاملة تضع كتاب الله في قلب طفلك
             </p>
           </div>
 
@@ -143,47 +149,70 @@ const Home = () => {
                 icon: <FaUsers />,
                 title: "سوق المحفظين (Marketplace)",
                 desc: "اختر الشيخ الأنسب لطفلك من بين نخبة من المتخصصين المعتمدين.",
+                link: "/teachers",
+                linkText: "تصفح المحفظين ←",
               },
               {
                 icon: <FaChild />,
                 title: "متابعة بشرية مستمرة",
                 desc: "تفاعل حقيقي بين الشيخ والطفل لضمان الاستمرارية والالتزام.",
+                link: "/features/marketplace",
+                linkText: "تعرف على الآلية ←",
               },
               {
                 icon: <FaMicrophoneAlt />,
-                title: "تصحيح التلاوة الذكي",
-                desc: "نظام تسجيل يسمح للشيخ بسماع طفلك وتصحيح مخارج الحروف بدقة.",
+                title: "تصحيح التلاوة والتسجيل",
+                desc: "نظام تسجيل صوتي متقدم يسمح للمحفظ بالاستماع وتصحيح مخارج الحروف بدقة.",
+                link: "/student/practice",
+                linkText: "تجربة الاستوديو ←",
               },
               {
                 icon: <FaChartLine />,
                 title: "لوحة متابعة ولي الأمر",
-                desc: "كن على اطلاع دائم بمستوى الحفظ، الحضور، وتقارير الأداء.",
+                desc: "كن على اطلاع دائم بمستوى الحفظ، الحضور، وملاحظات الشيوخ أولاً بأول.",
+                link: "/parent/dashboard",
+                linkText: "معاينة اللوحة ←",
               },
               {
                 icon: <GiStairsGoal />,
                 title: "مسار حفظ منظم",
-                desc: "خطط دراسية مخصصة تناسب عمر طفلك ومستواه الحالي.",
+                desc: "خطط دراسية مخصصة تناسب عمر طفلك ومستواه من جزء عم وحتى الختم.",
+                link: "/student/learning-plan",
+                linkText: "استعراض الخطة ←",
               },
               {
                 icon: <MdCastForEducation />,
-                title: "تعليم مرن",
-                desc: "تعلم من منزلك وفي الأوقات التي تناسب جدول عائلتك.",
+                title: "تعليم مرن وباقات عائلية",
+                desc: "تعلم من منزلك وفي الأوقات التي تناسب جدول عائلتك مع خصومات الإخوة.",
+                link: "/pricing",
+                linkText: "عرض الباقات ←",
               },
             ].map((feat, idx) => (
               <motion.div
                 key={idx}
                 whileInView={{ opacity: 1, scale: 1 }}
                 initial={{ opacity: 0, scale: 0.9 }}
-                whileHover={{ y: -10 }}
-                className="p-8 rounded-3xl bg-blue-50 border border-blue-100 hover:bg-white hover:shadow-2xl transition-all group"
+                whileHover={{ y: -8 }}
+                className="p-8 rounded-3xl bg-blue-50/60 border border-blue-100 hover:bg-white hover:shadow-2xl transition-all group flex flex-col justify-between"
               >
-                <div className="text-4xl text-blue-600 mb-6 group-hover:scale-110 transition-transform">
-                  {feat.icon}
+                <div>
+                  <div className="text-4xl text-blue-600 mb-6 group-hover:scale-110 transition-transform">
+                    {feat.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 text-blue-900">
+                    {feat.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed mb-6">
+                    {feat.desc}
+                  </p>
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-blue-900">
-                  {feat.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">{feat.desc}</p>
+
+                <Link
+                  to={feat.link}
+                  className="text-sm font-black text-blue-600 group-hover:text-yellow-600 flex items-center gap-1 transition-colors"
+                >
+                  {feat.linkText}
+                </Link>
               </motion.div>
             ))}
           </div>
@@ -258,7 +287,7 @@ const Home = () => {
               <div>
                 <h4 className="text-2xl font-bold mb-2">تقارير أداء متقدمة</h4>
                 <p className="text-gray-600">
-                  تحليلات ذكية توضح نقاط القوة والضعف في التجويد ومخارج الحروف
+                  تحليلات دقيقة توضح نقاط القوة والتقدم في التجويد ومخارج الحروف
                   بدقة علمية.
                 </p>
               </div>
@@ -280,7 +309,7 @@ const Home = () => {
               رؤية مُتقن للمستقبل (Vision)
             </h2>
             <p className="text-xl text-blue-200 max-w-3xl mx-auto">
-              نحن لا نبني تطبيقاً فحسب، نحن نصيغ مستقبل التعليم الديني باستخدام
+              نحن لا نبني تطبيقاً فحسب، نحن نصيغ مستقبل التعليم القرآني باستخدام
               أحدث تقنيات العصر لخدمة كتاب الله.
             </p>
           </motion.div>
@@ -321,37 +350,35 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 6. Footer */}
-      <footer className="bg-white py-12 border-t border-blue-100 text-center relative z-10">
-        <div className="max-w-4xl mx-auto px-6">
-          <h3 className="text-3xl font-black text-blue-900 mb-4 font-tajawal">
-            مُتقن - لجيلٍ يحمل النور
-          </h3>
-          <p className="text-gray-500 mb-8">
-            جميع الحقوق محفوظة &copy; {new Date().getFullYear()} لمنصة مُتقن
+      {/* 6. Pre-Footer CTA */}
+      <section className="py-20 px-6 bg-gradient-to-br from-[#0B122B] via-[#111A38] to-[#1E3A8A] text-white text-center relative overflow-hidden">
+        <div className="max-w-4xl mx-auto relative z-10">
+          <div className="inline-flex items-center gap-2 bg-yellow-500/20 text-yellow-400 px-4 py-1.5 rounded-full text-sm font-bold mb-6 border border-yellow-500/30">
+            <GiLantern /> رحلة النور تبدأ اليوم
+          </div>
+          <h2 className="text-3xl md:text-5xl font-black mb-6">
+            جاهز لتجربة قرآنية فريدة لطفلك؟
+          </h2>
+          <p className="text-blue-200 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+            انضم إلى مئات العائلات التي تعتمد على منصة مُتقن لربط قلوب أطفالها
+            بالقرآن الكريم بإشراف مشايخ معتمدين.
           </p>
-          <div className="flex justify-center gap-6">
+          <div className="flex flex-wrap justify-center gap-4">
             <Link
               to="/register"
-              className="text-blue-600 font-bold hover:underline"
+              className="px-8 py-4 bg-yellow-500 hover:bg-yellow-400 text-[#0B122B] font-black text-lg rounded-2xl shadow-xl shadow-yellow-500/20 transition-all hover:scale-105"
             >
-              إنشاء حساب جديد
+              ابدأ تجربتك المجانية الآن
             </Link>
             <Link
-              to="/login"
-              className="text-blue-600 font-bold hover:underline"
+              to="/teachers"
+              className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold text-lg rounded-2xl border border-white/20 transition-all backdrop-blur-sm"
             >
-              تسجيل الدخول
-            </Link>
-            <Link
-              to="/pricing"
-              className="text-blue-600 font-bold hover:underline"
-            >
-              الأسعار
+              استعرض المحفظين المتاحين
             </Link>
           </div>
         </div>
-      </footer>
+      </section>
     </div>
   );
 };

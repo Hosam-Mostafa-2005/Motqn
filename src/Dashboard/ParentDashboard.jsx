@@ -18,25 +18,11 @@ import {
   GiPrayerBeads,
 } from "react-icons/gi";
 
+import { useAppStore } from "../store/useAppStore";
+
 const ParentDashboard = () => {
-  const myChildren = [
-    {
-      id: 1,
-      name: "يوسف",
-      level: "جزء عمّ",
-      progress: 75,
-      lastSession: "منذ ساعتين",
-      sheikh: "الشيخ عبد الرحمن",
-    },
-    {
-      id: 2,
-      name: "سارة",
-      level: "القاعدة النورانية",
-      progress: 40,
-      lastSession: "أمس",
-      sheikh: "الشيخ يوسف",
-    },
-  ];
+  const { children, bookings } = useAppStore();
+  const myChildren = children;
 
   // إعدادات حركة الفوانيس (Swaying Animation)
   const lanternSway = (duration = 3, delay = 0) => ({
@@ -132,15 +118,17 @@ const ParentDashboard = () => {
             </p>
           </motion.div>
 
-          <motion.button
-            whileHover={{
-              scale: 1.05,
-              boxShadow: "0px 0px 20px rgba(234, 179, 8, 0.4)",
-            }}
-            className="bg-yellow-500 text-[#0a1128] px-8 py-4 rounded-3xl font-black flex items-center gap-3 shadow-xl transition-all relative z-30"
-          >
-            <FaPlus /> إضافة طفل جديد
-          </motion.button>
+          <Link to="/shiekhs/childsetup">
+            <motion.button
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0px 0px 20px rgba(234, 179, 8, 0.4)",
+              }}
+              className="bg-yellow-500 text-[#0a1128] px-8 py-4 rounded-3xl font-black flex items-center gap-3 shadow-xl transition-all relative z-30 cursor-pointer"
+            >
+              <FaPlus /> إضافة طفل جديد
+            </motion.button>
+          </Link>
         </div>
       </div>
 
@@ -202,7 +190,7 @@ const ParentDashboard = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {myChildren.map((child, index) => (
+            {myChildren.map((child) => (
               <motion.div
                 key={child.id}
                 whileHover={{ y: -10 }}
@@ -285,20 +273,30 @@ const ParentDashboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-blue-50">
-                <tr className="group hover:bg-blue-50/50 transition-all">
-                  <td className="py-6 pr-4 font-black text-blue-900">يوسف</td>
-                  <td className="py-6 text-gray-500 font-medium">
-                    اليوم - ٠٤:٠٠ م
-                  </td>
-                  <td className="py-6 font-bold text-blue-600 flex items-center gap-2">
-                    <GiFlowerPot className="text-yellow-500" /> الشيخ عبد الرحمن
-                  </td>
-                  <td className="py-6">
-                    <span className="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-2xl font-bold text-xs border border-yellow-200">
-                      بانتظار التأكيد
-                    </span>
-                  </td>
-                </tr>
+                {bookings.slice(0, 4).map((b) => (
+                  <tr key={b.id} className="group hover:bg-blue-50/50 transition-all">
+                    <td className="py-6 pr-4 font-black text-blue-900">{b.childName}</td>
+                    <td className="py-6 text-gray-500 font-medium">
+                      {b.date} - {b.time}
+                    </td>
+                    <td className="py-6 font-bold text-blue-600 flex items-center gap-2">
+                      <GiFlowerPot className="text-yellow-500" /> {b.sheikhName}
+                    </td>
+                    <td className="py-6">
+                      <span
+                        className={`px-4 py-2 rounded-2xl font-bold text-xs border ${
+                          b.status === "confirmed"
+                            ? "bg-green-100 text-green-700 border-green-200"
+                            : b.status === "cancelled"
+                            ? "bg-red-100 text-red-700 border-red-200"
+                            : "bg-yellow-100 text-yellow-700 border-yellow-200"
+                        }`}
+                      >
+                        {b.status === "confirmed" ? "مؤكدة" : b.status === "cancelled" ? "ملغاة" : "بانتظار التأكيد"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

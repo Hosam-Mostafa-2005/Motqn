@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   FaStar,
@@ -10,6 +11,7 @@ import {
   FaDragon,
   FaLock,
   FaGem,
+  FaArrowRight,
 } from "react-icons/fa";
 import {
   GiLantern,
@@ -70,6 +72,12 @@ const Gamification = () => {
             initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
           >
+            <Link
+              to="/features"
+              className="inline-flex items-center gap-2 text-yellow-400 text-xs font-bold mb-3 hover:underline"
+            >
+              <FaArrowRight /> العودة للمميزات
+            </Link>
             <h1 className="text-4xl font-black text-white mb-2 flex items-center gap-3">
               <GiCrescentBlade className="text-yellow-500" /> رحلة النور: مغامرة
               يوسف

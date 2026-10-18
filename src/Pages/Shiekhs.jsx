@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAppStore } from "../store/useAppStore";
+import BookingModal from "../components/common/BookingModal";
 import {
   FaStar,
   FaCheckCircle,
@@ -9,93 +11,16 @@ import {
   FaArrowRight,
   FaMoon,
   FaStarHalfAlt,
+  FaCalendarAlt,
+  FaUser,
 } from "react-icons/fa";
-import { GiMoon, GiSamaraMosque, GiLantern } from "react-icons/gi";
-
-// تحديث بيانات الشيوخ لإضافة تفاصيل التقييم
-const sheikhsData = [
-  {
-    id: 1,
-    name: "الشيخ عبد الرحمن السعدي",
-    rating: 5.0,
-    reviewCount: 120, // عدد التقييمات
-    students: 210,
-    experience: "15 سنة",
-    specialty: "إجازة في القراءات العشر",
-    image: "/man.png",
-    price: "250 ج.م / ساعة",
-    verified: true,
-    tags: ["صبور", "مخارج حروف"],
-  },
-  {
-    id: 2,
-    name: "الشيخ يوسف القاضي",
-    rating: 4.5,
-    reviewCount: 95,
-    students: 145,
-    experience: "8 سنوات",
-    specialty: "تحفيظ القاعدة النورانية",
-    image: "/man.png",
-    price: "180 ج.م / ساعة",
-    verified: true,
-    tags: ["مرح", "أسلوب قصصي"],
-  },
-  {
-    id: 3,
-    name: "الشيخ عمر الفاروق",
-    rating: 4.1,
-    reviewCount: 60,
-    students: 90,
-    experience: "6 سنوات",
-    specialty: "تجويد مكثف",
-    image: "/man.png",
-    price: "160 ج.م / ساعة",
-    verified: true,
-    tags: ["دقيق", "متابعة يومية"],
-  },
-  {
-    id: 4,
-    name: "الشيخ صابر المشرفي",
-    rating: 4.8,
-    reviewCount: 85,
-    students: 112,
-    experience: "12 سنة",
-    specialty: "تصحيح تلاوة وتدبر",
-    image: "/man.png",
-    price: "220 ج.م / ساعة",
-    verified: true,
-    tags: ["هادئ", "تفسير ميسر"],
-  },
-  {
-    id: 5,
-    name: "الشيخ بلال حمزة",
-    rating: 4.6,
-    reviewCount: 40,
-    students: 75,
-    experience: "4 سنوات",
-    specialty: "تحفيظ جزء عمّ",
-    image: "/man.png",
-    price: "130 ج.م / ساعة",
-    verified: false,
-    tags: ["سريع الرد", "تشجيع"],
-  },
-  {
-    id: 6,
-    name: "الشيخ إياد المقدسي",
-    rating: 4.9,
-    reviewCount: 200,
-    students: 300,
-    experience: "20 سنة",
-    specialty: "تأهيل للمسابقات الدولية",
-    image: "/man.png",
-    price: "350 ج.م / ساعة",
-    verified: true,
-    tags: ["خبير", "مقامات"],
-  },
-];
+import { GiMoon, GiSamaraMosque, GiLantern, GiCrescentBlade } from "react-icons/gi";
 
 const Shiekhs = () => {
+  const { teachers } = useAppStore();
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [bookingTeacher, setBookingTeacher] = useState(null);
 
   // دالة لرسم النجوم بناءً على التقييم
   const renderStars = (rating) => {
@@ -111,6 +36,34 @@ const Shiekhs = () => {
     }
     return stars;
   };
+
+  const filterCategories = [
+    { id: "all", label: "جميع المحفظين" },
+    { id: "qiraat", label: "القراءات العشر والتجويد" },
+    { id: "nourania", label: "القاعدة النورانية" },
+    { id: "kids", label: "البراعم وصغار السن" },
+  ];
+
+  const filteredTeachers = teachers.filter((sh) => {
+    const matchesSearch =
+      sh.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sh.specialty.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sh.tags.some((t) => t.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    if (!matchesSearch) return false;
+
+    if (activeFilter === "qiraat") {
+      return sh.specialty.includes("القراءات") || sh.specialty.includes("تجويد");
+    }
+    if (activeFilter === "nourania") {
+      return sh.specialty.includes("النورانية") || sh.tags.includes("القاعدة النورانية");
+    }
+    if (activeFilter === "kids") {
+      return sh.tags.includes("صغار السن") || sh.tags.includes("براعم") || sh.tags.includes("مرح");
+    }
+
+    return true;
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -130,21 +83,8 @@ const Shiekhs = () => {
       className="min-h-screen bg-[#f8fafc] font-tajawal pb-20 overflow-hidden text-right"
       dir="rtl"
     >
-      {/* 🌙 Hero Section - تصميم ليلي فخم */}
-      <div className="relative bg-[#0a1128] text-white py-24 px-6 overflow-hidden border-b-4 border-yellow-500">
-        {/* ✨ زر الرجوع للرئيسية */}
-        <div className="absolute top-8 right-8 z-50">
-          <motion.div whileHover={{ x: 5 }} whileTap={{ scale: 0.95 }}>
-            <Link
-              to="/"
-              className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-6 py-2.5 rounded-full text-white hover:bg-white/20 transition-all font-bold text-sm shadow-xl"
-            >
-              <FaArrowRight className="text-xs" />
-              العودة للرئيسية
-            </Link>
-          </motion.div>
-        </div>
-
+      {/* 🌙 Hero Section */}
+      <div className="relative bg-[#0a1128] text-white py-20 px-6 overflow-hidden border-b-4 border-yellow-500">
         <div className="absolute top-0 right-0 opacity-20 transform translate-x-20 -translate-y-10">
           <FaMoon className="text-[25rem] text-yellow-200 blur-sm" />
         </div>
@@ -153,132 +93,204 @@ const Shiekhs = () => {
         </div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="relative z-10 max-w-5xl mx-auto text-center"
         >
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-4">
             <GiLantern className="text-yellow-500 text-6xl animate-bounce" />
           </div>
-          <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight">
-            نخبة <span className="text-yellow-500">مُقرئي</span> المنصة
+          <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tight">
+            نخبة <span className="text-yellow-500">مُقرئي</span> المنصة المعتمدين
           </h1>
-          <p className="text-xl text-blue-100 max-w-3xl mx-auto font-light leading-relaxed">
+          <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto font-light leading-relaxed">
             اختر المعلم الأنسب لبناء مستقبل قرآني مشرق لطفلك، مع نخبة من الشيوخ
-            المجازين والمتقنين لمخارج الحروف.
+            المجازين والمتقنين لمخارج الحروف والتأسيس التربوي.
           </p>
         </motion.div>
       </div>
 
-      {/* 🔍 Search Bar */}
-      <div className="max-w-6xl mx-auto -mt-10 px-4 relative z-30">
-        <div className="bg-white/80 backdrop-blur-xl p-5 rounded-[2.5rem] shadow-2xl border border-white flex flex-col md:flex-row gap-4 items-center">
-          <div className="relative w-full">
-            <FaSearch className="absolute right-5 top-1/2 -translate-y-1/2 text-blue-300 text-xl" />
-            <input
-              type="text"
-              placeholder="ابحث عن محفظك القادم..."
-              className="w-full pr-14 pl-6 py-4 rounded-3xl border-none bg-blue-50/50 focus:ring-2 focus:ring-blue-500 outline-none text-right text-lg font-medium"
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+      {/* 🔍 Search & Filters Bar */}
+      <div className="max-w-6xl mx-auto -mt-8 px-4 relative z-30">
+        <div className="bg-white/95 backdrop-blur-xl p-6 rounded-[2.5rem] shadow-2xl border border-white space-y-4">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="relative w-full flex-1">
+              <FaSearch className="absolute right-5 top-1/2 -translate-y-1/2 text-blue-300 text-lg" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="ابحث باسم الشيخ، التخصص (تجويد، نورانية...)، أو الكلمات المفتاحية..."
+                className="w-full pr-14 pl-6 py-3.5 rounded-2xl border-none bg-blue-50/70 focus:ring-2 focus:ring-blue-500 outline-none text-right text-base font-medium"
+              />
+            </div>
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="text-xs text-gray-500 hover:text-red-500 font-bold px-3 py-2"
+              >
+                مسح البحث
+              </button>
+            )}
           </div>
-          <button className="flex items-center gap-3 bg-blue-600 text-white px-10 py-4 rounded-3xl hover:bg-blue-700 transition-all font-bold shadow-lg shadow-blue-200">
-            <FaFilter /> تصفية النتائج
-          </button>
+
+          {/* Quick Filter Tabs */}
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-100">
+            <span className="text-xs font-bold text-gray-400 flex items-center gap-1.5 ml-2">
+              <FaFilter className="text-blue-500 text-[10px]" /> تصنيف:
+            </span>
+            {filterCategories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveFilter(cat.id)}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  activeFilter === cat.id
+                    ? "bg-[#0a1128] text-yellow-400 font-black shadow-sm"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* 🕌 Grid - عرض الكروت */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="max-w-7xl mx-auto px-6 mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
-      >
-        {sheikhsData.map((sh) => (
-          <motion.div
-            key={sh.id}
-            variants={cardVariants}
-            whileHover={{ y: -15 }}
-            className="group relative bg-white rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 border border-blue-50 overflow-hidden"
-          >
-            <div className="h-32 bg-gradient-to-br from-blue-700 to-[#0a1128] relative overflow-hidden">
-              <div className="absolute top-2 left-2 opacity-10 text-white text-6xl">
-                <GiSamaraMosque />
-              </div>
-            </div>
-
-            <div className="relative px-8 pb-8 pt-16">
-              <div className="absolute -top-16 right-8 p-1 bg-white rounded-[2rem] shadow-lg">
-                <img
-                  src={sh.image}
-                  alt={sh.name}
-                  className="w-28 h-28 rounded-[1.8rem] object-cover bg-blue-50"
-                />
-                {sh.verified && (
-                  <div className="absolute -bottom-2 -left-2 bg-blue-500 text-white p-2 rounded-full border-4 border-white">
-                    <FaCheckCircle className="text-sm" />
+      {filteredTeachers.length > 0 ? (
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="max-w-7xl mx-auto px-6 mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {filteredTeachers.map((sh) => (
+            <motion.div
+              key={sh.id}
+              variants={cardVariants}
+              whileHover={{ y: -10 }}
+              className="group relative bg-white rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-all duration-300 border border-blue-50 overflow-hidden flex flex-col justify-between"
+            >
+              <div>
+                <div className="h-28 bg-gradient-to-br from-blue-700 to-[#0a1128] relative overflow-hidden">
+                  <div className="absolute top-2 left-2 opacity-10 text-white text-6xl">
+                    <GiSamaraMosque />
                   </div>
-                )}
-              </div>
+                </div>
 
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="text-2xl font-black text-blue-900 mb-1 group-hover:text-blue-600 transition-colors">
-                    {sh.name}
-                  </h3>
-                  {/* ⭐ عرض النجوم والتقييم */}
-                  <div className="flex items-center gap-1 mb-1">
-                    {renderStars(sh.rating)}
-                    <span className="text-gray-500 text-sm font-bold mr-1">
-                      ({sh.rating})
-                    </span>
+                <div className="relative px-6 pb-4 pt-12">
+                  {/* Photo with verified badge */}
+                  <div className="absolute -top-14 right-6 p-1 bg-white rounded-[1.8rem] shadow-lg">
+                    <img
+                      src={sh.image}
+                      alt={sh.name}
+                      className="w-24 h-24 rounded-[1.5rem] object-cover bg-blue-50"
+                    />
+                    {sh.verified && (
+                      <div className="absolute -bottom-1 -left-1 bg-blue-500 text-white p-1.5 rounded-full border-2 border-white shadow">
+                        <FaCheckCircle className="text-xs" />
+                      </div>
+                    )}
                   </div>
-                  <p className="text-xs text-gray-400">
-                    بناءً على {sh.reviewCount} تقييم
+
+                  {/* Header info */}
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <Link
+                        to={`/teachers/${sh.id}`}
+                        className="text-xl font-black text-blue-900 mb-1 group-hover:text-blue-600 transition-colors block"
+                      >
+                        {sh.name}
+                      </Link>
+                      <div className="flex items-center gap-1 mb-1">
+                        {renderStars(sh.rating)}
+                        <span className="text-gray-500 text-xs font-bold mr-1">
+                          ({sh.rating})
+                        </span>
+                        <span className="text-gray-400 text-[11px]">
+                          • {sh.reviewCount} تقييم
+                        </span>
+                      </div>
+                    </div>
+                    <div className="bg-yellow-50 text-yellow-800 px-2.5 py-1 rounded-lg text-[11px] font-bold border border-yellow-100 flex-shrink-0">
+                      {sh.experience} خبرة
+                    </div>
+                  </div>
+
+                  <p className="text-gray-600 text-xs mb-4 leading-relaxed line-clamp-2">
+                    {sh.specialty}
                   </p>
-                </div>
-                <div className="bg-yellow-50 text-yellow-700 px-3 py-1 rounded-lg text-xs font-bold border border-yellow-100">
-                  {sh.experience} خبرة
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {sh.tags.map((tag, i) => (
+                      <span
+                        key={i}
+                        className="px-2.5 py-0.5 bg-blue-50 text-blue-700 rounded-full text-[10px] font-bold"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <p className="text-gray-500 text-sm mb-6 leading-relaxed">
-                {sh.specialty} - متخصص في المتابعة الفردية وتعديل مخارج الحروف
-                للأطفال.
-              </p>
+              {/* Bottom Actions */}
+              <div className="px-6 pb-6 pt-3 border-t border-gray-100 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase">الاستثمار بالساعة</p>
+                  <span className="text-lg font-black text-blue-900">{sh.price}</span>
+                </div>
 
-              <div className="flex flex-wrap gap-2 mb-6">
-                {sh.tags.map((tag, i) => (
-                  <span
-                    key={i}
-                    className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-[10px] font-bold"
+                <div className="flex items-center gap-2">
+                  <Link
+                    to={`/teachers/${sh.id}`}
+                    className="px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors"
                   >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex items-center justify-between pt-6 border-t border-gray-50">
-                <div>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase">
-                    الاستثمار بالساعة
-                  </p>
-                  <span className="text-xl font-black text-blue-900">
-                    {sh.price}
-                  </span>
+                    الملف
+                  </Link>
+                  <button
+                    onClick={() => setBookingTeacher(sh)}
+                    className="bg-[#0a1128] text-white px-5 py-2.5 rounded-xl text-xs font-black hover:bg-blue-600 transition-all shadow-md cursor-pointer flex items-center gap-1.5"
+                  >
+                    <FaCalendarAlt className="text-[11px] text-yellow-400" /> حجز جلسة
+                  </button>
                 </div>
-                <button className="bg-[#0a1128] text-white px-8 py-3 rounded-2xl font-bold hover:bg-blue-600 transition-all shadow-lg">
-                  حجز جلسة
-                </button>
               </div>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
+            </motion.div>
+          ))}
+        </motion.div>
+      ) : (
+        /* Empty State */
+        <div className="max-w-md mx-auto text-center py-20 px-6">
+          <div className="w-20 h-20 bg-blue-50 text-blue-300 rounded-full flex items-center justify-center text-4xl mx-auto mb-4">
+            <FaSearch />
+          </div>
+          <h3 className="text-2xl font-black text-blue-900 mb-2">لا توجد نتائج مطابقة</h3>
+          <p className="text-gray-500 text-sm mb-6">
+            جرب البحث بكلمات أخرى أو اختر "جميع المحفظين" لعرض كل المقرئين المتاحين.
+          </p>
+          <button
+            onClick={() => {
+              setSearchTerm("");
+              setActiveFilter("all");
+            }}
+            className="bg-[#0a1128] text-white px-6 py-2.5 rounded-xl font-bold text-sm"
+          >
+            عرض جميع المحفظين
+          </button>
+        </div>
+      )}
 
-      <div className="mt-20 text-center">
-        <p className="text-gray-400 italic">"خيركم من تعلم القرآن وعلمه"</p>
+      {/* Booking Modal */}
+      <BookingModal
+        teacher={bookingTeacher}
+        isOpen={!!bookingTeacher}
+        onClose={() => setBookingTeacher(null)}
+      />
+
+      <div className="mt-20 text-center text-gray-400 text-sm italic">
+        "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ" — صحيح البخاري
       </div>
     </div>
   );

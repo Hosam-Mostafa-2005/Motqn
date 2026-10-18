@@ -21,25 +21,27 @@ import {
   GiOpenBook,
   GiStarsStack,
 } from "react-icons/gi";
+import { useAppStore } from "../store/useAppStore";
 
 const ChildSetup = () => {
   const navigate = useNavigate();
+  const { addChild } = useAppStore();
   const [step, setStep] = useState(1); // 1: Basic Info, 2: Quran Level
 
   const [formData, setFormData] = useState({
     // Step 1
     name: "",
     age: "",
-    gender: "",
-    grade: "",
-    readingLevel: "",
-    isFirstTime: "",
+    gender: "male",
+    grade: "primary",
+    readingLevel: "learning",
+    isFirstTime: "no",
 
     // Step 2
-    memorizedBefore: "",
-    memorizedAmount: "",
-    tajweedLevel: "",
-    pronunciationIssues: "",
+    memorizedBefore: "yes",
+    memorizedAmount: "جزء عمّ",
+    tajweedLevel: "basic",
+    pronunciationIssues: "no",
     issueDetails: "",
   });
 
@@ -57,8 +59,11 @@ const ChildSetup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Final Data:", formData);
-    navigate("/dashboard");
+    if (!formData.name) {
+      setFormData((prev) => ({ ...prev, name: "البطل الجديد" }));
+    }
+    addChild(formData);
+    navigate("/parent/dashboard");
   };
 
   // حركة الفوانيس

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppStore } from "../store/useAppStore";
 import {
   FaCheckCircle,
   FaTimesCircle,
@@ -9,6 +11,7 @@ import {
   FaChild,
   FaStar,
   FaGift,
+  FaArrowRight,
 } from "react-icons/fa";
 import {
   GiLantern,
@@ -16,10 +19,14 @@ import {
   GiPrayerBeads,
   GiOpenChest,
   GiReceiveMoney,
+  GiCrescentBlade,
 } from "react-icons/gi";
 
 const Pricing = () => {
+  const navigate = useNavigate();
+  const { setPricingSelection, currentUser } = useAppStore();
   const [childrenCount, setChildrenCount] = useState(1);
+  const [selectedPlanSuccess, setSelectedPlanSuccess] = useState(null);
 
   // حساب نسبة الخصم بناءً على عدد الأطفال
   const getDiscount = (count) => {
@@ -35,6 +42,18 @@ const Pricing = () => {
     const discount = getDiscount(childrenCount);
     const priceAfterDiscount = basePrice * (1 - discount);
     return Math.round(priceAfterDiscount);
+  };
+
+  const handleSubscribe = (plan) => {
+    const finalPricePerChild = calculatePrice(plan.basePrice);
+    const total = finalPricePerChild * childrenCount;
+    setPricingSelection(plan.id, childrenCount, total);
+
+    if (currentUser) {
+      setSelectedPlanSuccess({ plan, total, count: childrenCount });
+    } else {
+      navigate("/register");
+    }
   };
 
   const plans = [
@@ -247,7 +266,8 @@ const Pricing = () => {
                 </div>
 
                 <button
-                  className={`w-full py-4 rounded-xl font-black text-lg transition-all shadow-lg
+                  onClick={() => handleSubscribe(plan)}
+                  className={`w-full py-4 rounded-xl font-black text-lg transition-all shadow-lg cursor-pointer
                    ${
                      plan.id === "premium"
                        ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:shadow-orange-200"
@@ -316,7 +336,13 @@ const Pricing = () => {
               . مش هتدفع ولا مليم وهتستفيد بجزء من المحتوى، ألعاب تعليمية، وآية
               يومية عشان تطمن لجودة منصتنا.
             </p>
-            <button className="bg-white border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-xl font-bold hover:bg-blue-50 transition-all">
+            <button
+              onClick={() => {
+                setPricingSelection("freemium", 1, 0);
+                navigate("/register");
+              }}
+              className="bg-white border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-xl font-bold hover:bg-blue-50 transition-all cursor-pointer"
+            >
               ابدأ التجربة المجانية
             </button>
           </div>
@@ -344,6 +370,40 @@ const Pricing = () => {
       <div className="text-center mt-12 text-gray-400 text-sm">
         <p>جميع الأسعار بالجنيه المصري | ضمان استرجاع الأموال خلال 14 يوم</p>
       </div>
+
+      {/* مودال تأكيد اختيار الباقة */}
+      {selectedPlanSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm text-center">
+          <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl max-w-md w-full border-4 border-yellow-500 animate-in fade-in zoom-in-95">
+            <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+              <FaCheckCircle />
+            </div>
+            <h3 className="text-2xl font-black text-blue-900 mb-2">
+              تم اختيار {selectedPlanSuccess.plan.title}!
+            </h3>
+            <p className="text-gray-600 text-sm mb-6">
+              عدد الأبناء المشمولين: {selectedPlanSuccess.count} | الإجمالي: {selectedPlanSuccess.total} ج.م / شهرياً
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setSelectedPlanSuccess(null);
+                  navigate("/parent/settings");
+                }}
+                className="flex-1 py-3 bg-[#0a1128] text-white rounded-xl font-bold text-sm hover:bg-blue-900 transition-colors"
+              >
+                لوحة الإعدادات والاشتراك
+              </button>
+              <button
+                onClick={() => setSelectedPlanSuccess(null)}
+                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-200 transition-colors"
+              >
+                إغلاق
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -122,10 +122,10 @@ const RecordingDetails = () => {
 
               {/* الموجات الصوتية المتحركة */}
               <div className="flex items-end justify-center gap-1 h-32 mb-8">
-                {[...Array(15)].map((_, i) => (
+                {[35, 60, 40, 80, 50, 95, 45, 75, 65, 90, 30, 85, 55, 70, 40].map((h, i) => (
                   <motion.div
                     key={i}
-                    animate={{ height: [20, Math.random() * 80 + 20, 20] }}
+                    animate={{ height: [20, h, 20] }}
                     transition={{
                       duration: 1.5,
                       repeat: Infinity,
@@ -150,10 +150,16 @@ const RecordingDetails = () => {
               <p className="text-blue-900 font-bold mb-2">
                 تعليق الشيخ المصحح:
               </p>
-              <p className="text-gray-600 italic">
+              <p className="text-gray-600 italic mb-4">
                 "أحسن الله إليك يا بطل، انتبه لحرف 'ص' في كلمة 'الصراط' لتخرج
                 بقوة."
               </p>
+              <Link
+                to="/student/practice"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#0a1128] hover:bg-blue-900 text-white font-bold text-sm rounded-xl transition-all"
+              >
+                جرب استوديو التلاوة العملي الآن ←
+              </Link>
             </div>
           </motion.div>
         </div>
